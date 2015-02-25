@@ -1,0 +1,41 @@
+{
+  "name": "scriptloader",
+  "version": "0.0.0",
+  "description": "A simple DOM script loader",
+  "author": "FTVEN",
+  "keywords": [
+    "dom",
+    "script",
+    "load"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/francetv/scriptloader.git"
+  },
+  "main": "src/scriptloader.js",
+  "scripts": {
+    "postinstall": "bower install",
+    "test": "grunt test:dev"
+  },
+  "devDependencies": {
+    "bower": "*",
+    "grunt": "*",
+    "grunt-cli": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-rename": "*",
+    "grunt-contrib-requirejs": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-mocha-phantomjs": "*",
+    "jscoverage": "*",
+    "jshint": "*",
+    "json2htmlcov": "git://github.com/francetv/json2htmlcov.git",
+    "mocha-phantomjs": "*",
+    "precommit-hook": "*",
+    "morkdown": "*"
+  },
+  "directories": {
+    "test": "test"
+  }
+}
