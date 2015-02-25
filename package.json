@@ -1,6 +1,6 @@
 {
   "name": "scriptloader",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A simple DOM script loader",
   "author": "FTVEN",
   "keywords": [
