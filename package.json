@@ -1,6 +1,6 @@
 {
   "name": "scriptloader",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A simple DOM script loader",
   "author": "FTVEN",
   "keywords": [
@@ -13,29 +13,17 @@
     "type": "git",
     "url": "https://github.com/francetv/scriptloader.git"
   },
-  "main": "src/scriptloader.js",
+  "main": "src/index.js",
   "scripts": {
-    "postinstall": "bower install",
-    "test": "grunt test:dev"
+    "coverage": "istanbul cover _mocha",
+    "test": "mocha"
   },
   "devDependencies": {
-    "bower": "*",
-    "grunt": "*",
-    "grunt-cli": "*",
-    "grunt-contrib-clean": "*",
-    "grunt-contrib-rename": "*",
-    "grunt-contrib-requirejs": "*",
-    "grunt-contrib-uglify": "*",
-    "grunt-contrib-watch": "*",
-    "grunt-mocha-phantomjs": "*",
-    "jscoverage": "*",
-    "jshint": "*",
-    "json2htmlcov": "git://github.com/francetv/json2htmlcov.git",
-    "mocha-phantomjs": "*",
-    "precommit-hook": "*",
-    "morkdown": "*"
-  },
-  "directories": {
-    "test": "test"
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.5",
+    "jsdom": "9.8.3",
+    "jsdom-global": "2.1.0",
+    "mocha": "^3.1.2",
+    "sinon": "^1.17.6"
   }
 }
