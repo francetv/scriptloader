@@ -1,4 +1,4 @@
-/* global describe it */
+/* global describe it before after beforeEach afterEach */
 
 var chai = require('chai');
 var sinon = require('sinon');
@@ -23,9 +23,17 @@ function stubLoadScript (options) {
   }
 
   var scriptNode = {
+    get onload () {
+      return stubObject.successCallback;
+    },
+
     set onload (callback) {
       stubObject.successCallback = callback;
       stubObject.checkReadyForYield();
+    },
+
+    get onerror () {
+      return stubObject.errorCallback;
     },
 
     set onerror (callback) {
@@ -55,11 +63,11 @@ function stubLoadScript (options) {
         stubObject.setLoaded(!!options.yieldsSuccess);
       }
     },
-    restore: function restore() {
+    restore: function restore () {
       document.createElement = stubObject.backups.documentCreateElement;
       document.getElementsByTagName = stubObject.backups.documentGetElementsByTagName;
     },
-    setLoaded: function setLoaded(success) {
+    setLoaded: function setLoaded (success) {
       var callback = success ? stubObject.successCallback : stubObject.errorCallback;
 
       if (!callback) {
@@ -93,21 +101,20 @@ function stubLoadScript (options) {
     }
   }]);
 
-  document.getElementsByTagName = function(name) {
+  document.getElementsByTagName = function (name) {
     if (name === 'script') {
       return stubObject.stubs.scriptSearch.apply(this, arguments);
     }
     return stubObject.backups.documentGetElementsByTagName.apply(this, arguments);
   };
 
-  document.createElement = function(name) {
+  document.createElement = function (name) {
     if (name === 'script') {
       if (options.withEventListener) {
-        scriptNode.addEventListener = function addEventListener(event, callback) {
+        scriptNode.addEventListener = function addEventListener (event, callback) {
           if (event === 'load') {
             scriptNode.onload = callback;
-          }
-          else if (event === 'error') {
+          } else if (event === 'error') {
             scriptNode.onerror = callback;
           }
         };
@@ -122,8 +129,7 @@ function stubLoadScript (options) {
   return stubObject;
 }
 
-describe('scriptloader', function() {
-
+describe('scriptloader', function () {
   before(function () {
     this.jsdom = require('jsdom-global')();
   });
@@ -133,15 +139,15 @@ describe('scriptloader', function() {
   });
 
   var loadScriptStub;
-  beforeEach(function() {
+  beforeEach(function () {
     loadScriptStub = stubLoadScript();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     loadScriptStub.restore();
   });
 
-  it ('should load scripts and success callback', function () {
+  it('should load scripts and success callback', function () {
     var spy = sinon.spy();
 
     scriptloader('path/to/script', spy);
@@ -149,7 +155,7 @@ describe('scriptloader', function() {
     chai.expect(spy.firstCall.args[0]).to.be.null;
   });
 
-  it ('should load scripts and error callback', function () {
+  it('should load scripts and error callback', function () {
     loadScriptStub.options.yieldsSuccess = false;
     var spy = sinon.spy();
 
@@ -158,7 +164,7 @@ describe('scriptloader', function() {
     chai.expect(spy.firstCall.args[0]).not.to.be.null;
   });
 
-  it ('should load scripts and success callback (without eventlisteners)', function() {
+  it('should load scripts and success callback (without eventlisteners)', function () {
     loadScriptStub.options.withEventListener = false;
     var spy = sinon.spy();
 
@@ -167,7 +173,7 @@ describe('scriptloader', function() {
     chai.expect(spy.firstCall.args[0]).to.be.null;
   });
 
-  it ('should load scripts and error callback (without eventlisteners)', function() {
+  it('should load scripts and error callback (without eventlisteners)', function () {
     loadScriptStub.options.yieldsSuccess = false;
     loadScriptStub.options.withEventListener = false;
     var spy = sinon.spy();
@@ -177,7 +183,7 @@ describe('scriptloader', function() {
     chai.expect(spy.firstCall.args[0]).not.to.be.null;
   });
 
-  it ('should load scripts and success callback (without eventlisteners & with readyState to "loaded")', function() {
+  it('should load scripts and success callback (without eventlisteners & with readyState to "loaded")', function () {
     loadScriptStub.options.withEventListener = false;
     loadScriptStub.options.withReadyState = 'loaded';
     var spy = sinon.spy();
@@ -187,7 +193,7 @@ describe('scriptloader', function() {
     chai.expect(spy.firstCall.args[0]).to.be.null;
   });
 
-  it ('should load scripts and success callback (without eventlisteners & with readyState to "complete")', function() {
+  it('should load scripts and success callback (without eventlisteners & with readyState to "complete")', function () {
     loadScriptStub.options.withEventListener = false;
     loadScriptStub.options.withReadyState = 'complete';
     var spy = sinon.spy();
@@ -197,21 +203,19 @@ describe('scriptloader', function() {
     chai.expect(spy.firstCall.args[0]).to.be.null;
   });
 
-  it ('should load scripts and success callback (without eventlisteners & with notreadyState to "loading")', function() {
+  it('should load scripts and success callback (without eventlisteners & with notreadyState to "loading")', function () {
     loadScriptStub.options.withEventListener = false;
     loadScriptStub.options.withNotReadyState = 'loading';
 
     var spy = sinon.spy();
 
-    var calls = 0;
-    var timeout;
     scriptloader('path/to/script', spy);
 
     chai.expect(spy.callCount).to.eql(1);
     chai.expect(spy.firstCall.args[0]).to.be.null;
   });
 
-  it ('should not call twice given callback', function() {
+  it('should not call twice given callback', function () {
     delete loadScriptStub.options.yieldsSuccess;
     var spy = sinon.spy();
 
